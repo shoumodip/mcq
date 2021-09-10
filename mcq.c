@@ -50,6 +50,7 @@ int main(int argc, char **argv)
 
         if (length == 0) {
             match_answer(answer, &score);
+            pending = false;
         } else {
             switch (input[0]) {
             case 'Q':
