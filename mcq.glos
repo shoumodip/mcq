@@ -1,0 +1,80 @@
+import std.core
+import std.linux
+import std.string
+
+let match_answer(answer uint) bool {
+    print!("Enter your answer: ");
+
+    let buffer char[32]
+    let input = core.gets(buffer, 32)
+    let choice, ok = string.parse_uint(input)
+    if !ok {
+        eprint!("Error: invalid choice '", input, "'\n")
+        linux.exit(1)
+    }
+
+    print!('\n')
+    return choice == answer + 1
+}
+
+let main() {
+    if argc == 0 {
+        eprint!("Usage: mcq FILE\n")
+        eprint!("Error: input file not provided\n")
+        linux.exit(1)
+    }
+
+    let contents, ok = core.map_file(*argv)
+    if !ok {
+        eprint!("Error: could not read '", *argv, "'\n")
+        linux.exit(1)
+    }
+
+    let score = 0
+    let total = 0
+    let index = 0
+    let answer = 0
+    let pending = false
+    while contents.size > 0 {
+        let line = string.split(&contents, '\n')
+
+        if line.size == 0 {
+            if match_answer(answer) {
+                score += 1
+            }
+
+            pending = false
+        } else {
+            match *line.data {
+                'Q' => {
+                    index = 0
+                    total += 1
+                    pending = true
+                }
+
+                'X' => {
+                    answer = index
+                    index += 1
+                }
+
+                '-' => index += 1
+            }
+
+            if index == 0 {
+                print!("Q) ")
+            } else {
+                print!(index, ") ")
+            }
+
+            line.data += 2 as *char
+            line.size -= 2
+            print!(line, '\n')
+        }
+    }
+
+    if pending && match_answer(answer) {
+        score += 1
+    }
+
+    print!("You scored ", score, '/', total, ".\n")
+}
