@@ -1,4 +1,4 @@
-import std.core
+import std.io
 import std.linux
 import std.string
 
@@ -6,7 +6,7 @@ let match_answer(answer uint) bool {
     print!("Enter your answer: ");
 
     let buffer char[32]
-    let input = core.gets(buffer, 32)
+    let input = io.gets(buffer, 32)
     let choice, ok = string.parse_uint(input)
     if !ok {
         eprint!("Error: invalid choice '", input, "'\n")
@@ -24,7 +24,7 @@ let main() {
         linux.exit(1)
     }
 
-    let contents, ok = core.map_file(*argv)
+    let contents, ok = io.map_file(*argv)
     if !ok {
         eprint!("Error: could not read '", *argv, "'\n")
         linux.exit(1)
