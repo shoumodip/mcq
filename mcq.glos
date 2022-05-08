@@ -1,16 +1,16 @@
-import std:io
-import std:linux
-import std:string
+import std.io
+import std.linux
+import std.string
 
 let match_answer(answer uint) bool {
-    print("Enter your answer: ")
+    print("Enter your answer. ")
 
     let buffer char[32]
-    let input = io:gets(buffer, 32)
-    let choice, ok = string:parse_uint(input)
+    let input = io.gets(buffer, 32)
+    let choice, ok = string.atoi(input)
     if !ok {
         eprint("Error: invalid choice '", input, "'\n")
-        linux:exit(1)
+        linux.exit(1)
     }
 
     print('\n')
@@ -21,13 +21,13 @@ let main() {
     if argc == 0 {
         eprint("Usage: mcq FILE\n")
         eprint("Error: input file not provided\n")
-        linux:exit(1)
+        linux.exit(1)
     }
 
-    let contents, ok = io:map_file(@argv)
+    let contents, ok = io.map_file(@argv)
     if !ok {
         eprint("Error: could not read '", @argv, "'\n")
-        linux:exit(1)
+        linux.exit(1)
     }
 
     let score = 0
@@ -36,7 +36,7 @@ let main() {
     let answer = 0
     let pending = false
     while contents.size > 0 {
-        let line = string:split(&contents, '\n')
+        let line = string.split(&contents, '\n')
 
         if line.size == 0 {
             if match_answer(answer) {
