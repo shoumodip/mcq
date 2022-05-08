@@ -1,33 +1,33 @@
-import std.io
-import std.linux
-import std.string
+import std:io
+import std:linux
+import std:string
 
 let match_answer(answer uint) bool {
-    print!("Enter your answer: ");
+    print("Enter your answer: ")
 
     let buffer char[32]
-    let input = io.gets(buffer, 32)
-    let choice, ok = string.parse_uint(input)
+    let input = io:gets(buffer, 32)
+    let choice, ok = string:parse_uint(input)
     if !ok {
-        eprint!("Error: invalid choice '", input, "'\n")
-        linux.exit(1)
+        eprint("Error: invalid choice '", input, "'\n")
+        linux:exit(1)
     }
 
-    print!('\n')
+    print('\n')
     return choice == answer + 1
 }
 
 let main() {
     if argc == 0 {
-        eprint!("Usage: mcq FILE\n")
-        eprint!("Error: input file not provided\n")
-        linux.exit(1)
+        eprint("Usage: mcq FILE\n")
+        eprint("Error: input file not provided\n")
+        linux:exit(1)
     }
 
-    let contents, ok = io.map_file(*argv)
+    let contents, ok = io:map_file(@argv)
     if !ok {
-        eprint!("Error: could not read '", *argv, "'\n")
-        linux.exit(1)
+        eprint("Error: could not read '", @argv, "'\n")
+        linux:exit(1)
     }
 
     let score = 0
@@ -36,7 +36,7 @@ let main() {
     let answer = 0
     let pending = false
     while contents.size > 0 {
-        let line = string.split(&contents, '\n')
+        let line = string:split(&contents, '\n')
 
         if line.size == 0 {
             if match_answer(answer) {
@@ -45,7 +45,7 @@ let main() {
 
             pending = false
         } else {
-            match *line.data {
+            match @line.data {
                 'Q' => {
                     index = 0
                     total += 1
@@ -61,14 +61,14 @@ let main() {
             }
 
             if index == 0 {
-                print!("Q) ")
+                print("Q) ")
             } else {
-                print!(index, ") ")
+                print(index, ") ")
             }
 
             line.data += 2 as *char
             line.size -= 2
-            print!(line, '\n')
+            print(line, '\n')
         }
     }
 
@@ -76,5 +76,5 @@ let main() {
         score += 1
     }
 
-    print!("You scored ", score, '/', total, ".\n")
+    print("You scored ", score, '/', total, ".\n")
 }
